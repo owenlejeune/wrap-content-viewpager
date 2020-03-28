@@ -5,21 +5,26 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 
-class WrapContentViewPager(context: Context, attrs: AttributeSet) : ViewPager(context, attrs) {
+open class WrapContentViewPager(context: Context, attrs: AttributeSet) : ViewPager(context, attrs) {
 
     companion object {
         private const val HEIGHT_FLAG = 1
         private const val WIDTH_FLAG = 2
     }
 
-    var wrapHeight: Boolean = false
-    var wrapWidth: Boolean = false
+    protected var _wrapHeight: Boolean = false
+    val wrapHeight: Boolean
+        get() = _wrapHeight
+
+    protected var _wrapWidth: Boolean = false
+    val wrapWidth: Boolean
+        get() = _wrapWidth
 
     init {
         val arr = context.obtainStyledAttributes(attrs, R.styleable.WrapContentViewPager)
         val wrapStyle = arr.getInt(R.styleable.WrapContentViewPager_wrap_method, 0)
-        if (wrapStyle and HEIGHT_FLAG > 0) { wrapHeight = true }
-        if (wrapStyle and WIDTH_FLAG > 0) { wrapWidth = true }
+        if (wrapStyle and HEIGHT_FLAG > 0) { _wrapHeight = true }
+        if (wrapStyle and WIDTH_FLAG > 0) { _wrapWidth = true }
         arr.recycle()
     }
 
@@ -27,10 +32,10 @@ class WrapContentViewPager(context: Context, attrs: AttributeSet) : ViewPager(co
         var hMeasureSpec = heightMeasureSpec
         var wMeasureSpec = widthMeasureSpec
 
-        if (wrapHeight)
+        if (_wrapHeight)
             hMeasureSpec = measureWrap(widthMeasureSpec, heightMeasureSpec) { v -> v.measuredHeight }
 
-        if (wrapWidth)
+        if (_wrapWidth)
             wMeasureSpec = measureWrap(heightMeasureSpec, widthMeasureSpec) { v -> v.measuredWidth }
 
         super.onMeasure(wMeasureSpec, hMeasureSpec)
